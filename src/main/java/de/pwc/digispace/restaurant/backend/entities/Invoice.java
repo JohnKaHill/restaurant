@@ -4,13 +4,13 @@ import java.time.LocalDateTime;
 
 public class Invoice {
 	
-	private PaymentMethod paymentMethod;
+	private PaymentMethodType paymentMethod;
 	
 	private LocalDateTime datePaid;
 	
 	private Order order;
 
-	public Invoice(Order order, PaymentMethod paymentMethod) {
+	public Invoice(Order order, PaymentMethodType paymentMethod) {
 		super();
 		order.setOpen(false);
 		order.setOccupied(false);
@@ -19,11 +19,11 @@ public class Invoice {
 		this.datePaid = LocalDateTime.now();
 	}
 
-	public PaymentMethod getPaymentMethod() {
+	public PaymentMethodType getPaymentMethod() {
 		return paymentMethod;
 	}
 
-	public void setPaymentMethod(PaymentMethod paymentMethod) {
+	public void setPaymentMethod(PaymentMethodType paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
 

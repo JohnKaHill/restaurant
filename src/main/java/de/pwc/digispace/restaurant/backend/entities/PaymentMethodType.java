@@ -1,5 +1,5 @@
 package de.pwc.digispace.restaurant.backend.entities;
 
-public enum PaymentMethod {
+public enum PaymentMethodType {
 	CASH, DEBIT, VISA, MASTERCARD, BITCOIN, CHECK
 }

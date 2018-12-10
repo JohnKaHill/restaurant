@@ -9,21 +9,21 @@ package de.pwc.digispace.restaurant.backend.entities;
  */
 public class Food extends Product {
 		
-	private FoodCategory foodCategory;
+	private FoodType foodCategory;
 
 	private boolean containsMeat;
 
-	public Food(String name, double price, int tax, FoodCategory foodCategory, boolean containsMeat, String description) {
+	public Food(String name, double price, int tax, FoodType foodCategory, boolean containsMeat, String description) {
 		super(name, price, tax, description);
 		this.containsMeat = containsMeat;
 		this.foodCategory = foodCategory;
 	}
 
-	public FoodCategory getFoodCategory() {
+	public FoodType getFoodCategory() {
 		return foodCategory;
 	}
 
-	public void setFoodCategory(FoodCategory foodCategory) {
+	public void setFoodCategory(FoodType foodCategory) {
 		this.foodCategory = foodCategory;
 	}
 
