@@ -1,5 +1,7 @@
 package de.pwc.digispace.restaurant.backend.entities;
 
+import java.math.BigDecimal;
+
 /**
  * 
  * @author john
@@ -13,7 +15,7 @@ public class Food extends Product {
 
 	private boolean containsMeat;
 
-	public Food(String name, double price, int tax, FoodType foodCategory, boolean containsMeat, String description) {
+	public Food(String name, BigDecimal price, int tax, FoodType foodCategory, boolean containsMeat, String description) {
 		super(name, price, tax, description);
 		this.containsMeat = containsMeat;
 		this.foodCategory = foodCategory;
@@ -27,11 +29,11 @@ public class Food extends Product {
 		this.foodCategory = foodCategory;
 	}
 
-	public boolean isContainsMeat() {
+	public boolean containsMeat() {
 		return containsMeat;
 	}
 
-	public void setContainsMeat(boolean containsMeat) {
+	public void containsMeat(boolean containsMeat) {
 		this.containsMeat = containsMeat;
 	}	
 	

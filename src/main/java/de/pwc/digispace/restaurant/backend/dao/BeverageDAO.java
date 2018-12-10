@@ -11,35 +11,40 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.pwc.digispace.restaurant.backend.entities.Beverage;
+import de.pwc.digispace.restaurant.backend.entities.BeverageType;
 import de.pwc.digispace.restaurant.backend.entities.Order;
 
-public class OrderDAO implements Dao<Order>{
+public class BeverageDAO implements Dao<Beverage>{
 	
-	public final Logger logger = LoggerFactory.getLogger(OrderDAO.class);
+	public final Logger logger = LoggerFactory.getLogger(BeverageDAO.class);
 
 	Connection connection = null;
 	PreparedStatement preparedStatement = null;
 	ResultSet resultSet = null;
 	
-	public OrderDAO() {
+	public BeverageDAO() {
 
 	}
 	private Connection getConnection() throws SQLException {
 		return ConnectionFactory.getInstance().getConnection();
 	}
 	
-	public void add( Order order ) {
+	public void add( Beverage beverage ) {
 		try {
 			String queryString = 
-					"INSERT INTO orders(orderId, dateCreated, tableNumber,"
-					+ "isOpen, isOccupied) VALUES(?,?,?,?,?)";
+					"INSERT INTO drinks(name, description, price, tax, dateCreated,"
+					+ "dateEdited, containsAlcohol, beverageType) VALUES(?,?,?,?,?,?,?,?)";
 			connection = getConnection();
 			preparedStatement = connection.prepareStatement(queryString);
-			preparedStatement.setObject(1, order.getOrderId());
-			preparedStatement.setObject(2, order.getDateCreated());
-			preparedStatement.setInt(3, order.getTableNumber());
-			preparedStatement.setBoolean(4, order.isOpen());
-			preparedStatement.setBoolean(5, order.isOccupied());
+			preparedStatement.setObject(1, beverage.getName());
+			preparedStatement.setString(2, beverage.getDescription());
+			preparedStatement.setBigDecimal(3, beverage.getPrice());
+			preparedStatement.setInt(4, beverage.getTax());
+			preparedStatement.setObject(5, beverage.getDateCreated());
+			preparedStatement.setObject(6, beverage.getDateEdited());
+			preparedStatement.setBoolean(7, beverage.containsAlcohol());
+			preparedStatement.setString(8, beverage.getBeverageType().toString());
 			int i = preparedStatement.executeUpdate();
 			logger.info("{} orders added successfully", i);
 		} catch (SQLException e) {
@@ -60,18 +65,21 @@ public class OrderDAO implements Dao<Order>{
 		}
 	}
 	
-	public void update(Order order) {
+	public void update(Beverage beverage) {
 		try {
-			String queryString = "UPDATE orders SET tableNumber=?, "
-					+ "isOpen=?, isOccupied=? WHERE orderId=?";
+			String queryString = "UPDATE drinks SET name=?, description=?, price=?, tax=?,"
+					+ "dateEdited=?, containsAlohol=?, beverageType=? WHERE name=?";
 			connection = getConnection();
 			preparedStatement = connection.prepareStatement(queryString);
-			preparedStatement.setInt(1, order.getTableNumber());
-			preparedStatement.setBoolean(2, order.isOpen());
-			preparedStatement.setBoolean(3, order.isOccupied());
-			preparedStatement.setObject(4, order.getOrderId());
+			preparedStatement.setObject(1, beverage.getName());
+			preparedStatement.setString(2, beverage.getDescription());
+			preparedStatement.setBigDecimal(3, beverage.getPrice());
+			preparedStatement.setInt(4, beverage.getTax());
+			preparedStatement.setObject(5, beverage.getDateEdited());
+			preparedStatement.setBoolean(6, beverage.containsAlcohol());
+			preparedStatement.setString(7, beverage.getBeverageType().toString());
 			int i = preparedStatement.executeUpdate();
-			logger.info("{} orders UPDATED!", i);
+			logger.info("{} beverage(s) UPDATED!", i);
 		} catch(SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -90,14 +98,14 @@ public class OrderDAO implements Dao<Order>{
 		}
 	}
 	
-	public void delete(Order order) {
+	public void delete(Beverage beverage) {
 		try {
-			String queryString = "DELETE FROM orders WHERE orderid=?";
+			String queryString = "DELETE FROM drinks WHERE name=?";
 			connection = getConnection();
 			preparedStatement = connection.prepareStatement(queryString);
-			preparedStatement.setObject(1, order.getOrderId());
-			int i = preparedStatement.executeUpdate();
-			logger.info("DELETED {} order.", i);
+			preparedStatement.setString(1, beverage.getName());
+			preparedStatement.executeUpdate();
+			logger.info("DELETED {} beverage.", beverage.getName());
 		} catch(SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -116,20 +124,20 @@ public class OrderDAO implements Dao<Order>{
 		}
 	}
 	
-	public Order findById(UUID orderId) {
+	public Beverage findById(String name) {
 		try {
-			String queryString = "SELECT FROM orders where orderId=?";
+			String queryString = "SELECT FROM drinks where name=?";
 			connection = getConnection();
 			preparedStatement = connection.prepareStatement(queryString);
-			preparedStatement.setObject(1, orderId);
+			preparedStatement.setString(1, name);
 			resultSet = preparedStatement.executeQuery();
-			Order order = new Order(resultSet.getObject("orderId"), resultSet.getObject("dateCreated"),
-					resultSet.getInt("tableNumber"), resultSet.getBoolean("isOpen"), resultSet.getBoolean("isOccupied"),
-					OrderFoodDAO.getById(orderId), OrderBeverageDAO.getById(orderId());
+			Beverage beverage = new Beverage(resultSet.getString("name"), resultSet.getString("description"),
+					resultSet.getBigDecimal("price"), resultSet.getInt("tax"), resultSet.getObject("dateCreated"),
+					resultSet.getObject("dateEdited"), BeverageType.valueOf(resultSet.getString("beverageType")), resultSet.getBoolean("containsAlcohol"));
 			logger.info("orderId: {}\ntable Number: {}\ndateCreated: {}\n\n", 
 					resultSet.getObject("orderId"), resultSet.getInt("tableNumber"), 
 					resultSet.getObject("dateCreated");
-			return order;
+			return beverage;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -151,23 +159,23 @@ public class OrderDAO implements Dao<Order>{
 		}
 	}
 	
-	public List<Order> findAll() {
-		List<Order> orders = new ArrayList<>();
+	public List<Beverage> findAll() {
+		List<Beverage> drinks = new ArrayList<>();
 		try {
 			String queryString = "SELECT * FROM orders";
 			connection = getConnection();
 			preparedStatement = connection.prepareStatement(queryString);
 			resultSet = preparedStatement.executeQuery();
 			while (resultSet.next()) {
-				Order order = new Order(resultSet.getObject("orderId"), resultSet.getObject("dateCreated"),
+				Beverage beverage = new Beverage(resultSet.getObject("orderId"), resultSet.getObject("dateCreated"),
 						resultSet.getInt("tableNumber"), resultSet.getBoolean("isOpen"), resultSet.getBoolean("isOccupied"),
 						OrderFoodDAO.getById(orderId), OrderBeverageDAO.getById(orderId());
 				logger.info("orderId: {}\ntable Number: {}\ndateCreated: {}\n\n", 
 						resultSet.getObject("orderId"), resultSet.getInt("tableNumber"), 
 						resultSet.getObject("dateCreated");
-				orders.add(order);
+				drinks.add(beverage);
 			}
-			return orders;
+			return drinks;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

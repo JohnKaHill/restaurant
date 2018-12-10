@@ -43,6 +43,18 @@ public class Order {
 		this.drinks = drinks;
 	}
 	
+	public Order(UUID orderId, LocalDateTime dateCreated, int tableNumber, boolean isOpen, boolean isOccupied,
+			List<Food> meals, List<Beverage> drinks) {
+		super();
+		this.orderId = orderId;
+		this.dateCreated = dateCreated;
+		this.tableNumber = tableNumber;
+		this.isOpen = isOpen;
+		this.isOccupied = isOccupied;
+		this.meals = meals;
+		this.drinks = drinks;
+	}
+
 	public Order(int tableNumber, List<Food> meals, List<Beverage> drinks) {
 		super();
 		orderId = UUID.randomUUID();

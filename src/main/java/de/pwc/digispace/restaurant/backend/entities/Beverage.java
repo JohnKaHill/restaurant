@@ -1,5 +1,8 @@
 package de.pwc.digispace.restaurant.backend.entities;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 /**
  * 
  * @author john
@@ -13,7 +16,14 @@ public class Beverage extends Product {
 
 	private boolean containsAlcohol;
 
-	public Beverage(String name, double price, int tax, BeverageType beverageType, boolean containsAlcohol, String description) {
+	public Beverage(String name, String description, BigDecimal price, int tax, LocalDateTime dateCreated,
+			LocalDateTime dateEdited, BeverageType beverageType, boolean containsAlcohol) {
+		super(name, description, price, tax, dateCreated, dateEdited);
+		this.beverageType = beverageType;
+		this.containsAlcohol = containsAlcohol;
+	}
+
+	public Beverage(String name, BigDecimal price, int tax, BeverageType beverageType, boolean containsAlcohol, String description) {
 		super(name, price, tax, description);
 		this.containsAlcohol = containsAlcohol;
 		this.beverageType = beverageType;
@@ -27,11 +37,11 @@ public class Beverage extends Product {
 		this.beverageType = beverageType;
 	}
 
-	public boolean isContainsAlcohol() {
+	public boolean containsAlcohol() {
 		return containsAlcohol;
 	}
 
-	public void setContainsAlcohol(boolean containsAlcohol) {
+	public void containsAlcohol(boolean containsAlcohol) {
 		this.containsAlcohol = containsAlcohol;
 	}
 	

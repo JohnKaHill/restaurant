@@ -1,9 +1,7 @@
 package de.pwc.digispace.restaurant.backend.entities;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Product {
 		
@@ -11,7 +9,7 @@ public class Product {
 		
 	private String description;
 	
-	private double price;
+	private BigDecimal price;
 	
 	private int tax;
 	
@@ -19,7 +17,18 @@ public class Product {
 	
 	private LocalDateTime dateEdited;
 
-	public Product(String name, double price, int tax, String description) {
+	public Product(String name, String description, BigDecimal price, int tax, LocalDateTime dateCreated,
+			LocalDateTime dateEdited) {
+		super();
+		this.name = name;
+		this.description = description;
+		this.price = price;
+		this.tax = tax;
+		this.dateCreated = dateCreated;
+		this.dateEdited = dateEdited;
+	}
+
+	public Product(String name, BigDecimal price, int tax, String description) {
 		super();
 		this.name = name;
 		this.price = price;
@@ -44,11 +53,11 @@ public class Product {
 		this.description = description;
 	}
 
-	public double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 
